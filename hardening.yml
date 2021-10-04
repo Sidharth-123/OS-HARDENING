@@ -1,0 +1,8 @@
+- name: System Hardening
+  hosts: {{server}}
+  become: yes
+  gather_facts: true
+  roles:
+    - os-hardening
+    - linux-system-roles.selinux
+    - ssh-hardening

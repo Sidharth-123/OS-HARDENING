@@ -1,0 +1,15 @@
+---
+
+nginx_site_name: 'demo'
+nginx_site_server_name: '{{ ansible_ssh_host }}'
+nginx_site_server_alias: []
+nginx_site_port: 80
+nginx_site_ssl_port: 443
+nginx_site_ssl_only: true
+nginx_site_ssl_on: true
+nginx_site_key: demo.key
+nginx_site_cert: demo.crt
+nginx_site_ca_cert: []
+nginx_site_upstream_host: 'localhost'
+nginx_site_upstream_port: '3000'
+nginx_site_root: '/var/www/html/'

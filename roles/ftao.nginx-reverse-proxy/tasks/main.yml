@@ -1,0 +1,54 @@
+---
+- name: Update the software package repository
+  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+- name: Check whether NGINX installed or not
+  stat: path=/etc/nginx
+  register: nginx
+
+
+- name: install nginx
+  apt: pkg=nginx state=installed
+  tags: 
+    - nginx
+  when: not nginx.stat.exists
+  become: true
+
+- name: upload cert for ssl site
+  copy: src=templates/demo.crt
+        dest=/etc/ssl/certs/{{ nginx_site_name }}.crt
+        mode=644 force=yes
+  when: nginx_site_ssl_on
+  notify:
+    - restart nginx
+  tags: 
+    - nginx
+
+- name: upload private key for ssl site
+  become: true
+  copy: src=templates/demo.key
+        dest=/etc/ssl/private/{{ nginx_site_name }}.key
+        mode=644 force=yes
+  when: nginx_site_ssl_on
+  notify:
+    - restart nginx
+  tags: 
+    - nginx
+
+- name: install site
+  template: src=site.nginx.conf 
+            dest=/etc/nginx/sites-available/{{ nginx_site_name }}.conf
+  notify:
+    - restart nginx
+  tags: 
+    - nginx
+
+- name: enable site
+  file: src=/etc/nginx/sites-available/{{ nginx_site_name }}.conf
+        dest=/etc/nginx/sites-enabled/{{ nginx_site_name }}.conf
+        state=link force=yes
+  notify:
+    - restart nginx
+  tags: 
+    - nginx
+

@@ -1,0 +1,6 @@
+- name: NGINX Reverse-Proxy with SSL
+  hosts: server1
+  become: true
+  gather_facts: true
+  roles:
+    - ftao.nginx-reverse-proxy
